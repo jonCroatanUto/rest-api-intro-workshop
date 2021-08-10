@@ -2,6 +2,7 @@
 // ESTA PARTE ES GESTIONAR EL TOKKEN MEDIANTE FIREBASE
 
 const { auth } = require("../services/firebase/firebase");
+const db = require("../models");
 async function authMiddleweare(req,res,next){
     try{
         if(req.headers.authorization &&
@@ -18,7 +19,7 @@ async function authMiddleweare(req,res,next){
 
     }catch(err){
         return res.status(401).send({
-            "error":err});
+            error:err});
     }
 }
 

@@ -9,7 +9,7 @@ const randTokken = require("rand-token");
 
 async function register(req,res){
     
-    const {firstName,lastName,email, password}=req.body;
+    const {firstName,lastName,email, password, uid, active}=req.body;
     try{
     
     const{_id} = await db.User.create({
@@ -17,6 +17,8 @@ async function register(req,res){
             lastName:lastName,
             email:email,
             password:await db.User.encryptPassword(password),
+            firebase_id:uid,
+            active:active,
     });
 
 
@@ -35,48 +37,31 @@ async function register(req,res){
 
 }
 
-async function refreshTokken(req, res, next){
-    const { email,refreshTokken }=req.body;
-    try{
-        if(refreshTokken in sessionData.refreshTokens && 
-            sessionData.refreshTokens[refreshTokken]===email
-            ){
-            const accessTokken = generateTokken({email:email});
-            return res.status(200).send({
-                accessTokken:accessTokken,
-                refreshTokken:refreshTokken,
-                message:`Welcome ${email}`,
-            })
-        }
-    }catch(err){
-        return res.status(401).send({
-            error:err,
-        })
-    }
-}
-
 async function login(req,res){
-    const {email, password}=req.body;
+    const { uid, email } = req.user;
     try{
-        const userFound = await db.User.findOne({email:email});
-        const matchPassword = await db.User.comparePassword(password,userFound.password);
-        if(userFound) {
-            if(matchPassword){
-                const accessTokken = generateTokken({email:email});
-                const refreshTokken= randTokken.generate(256);
-
-                sessionData.refreshTokens[refreshTokken]=userFound.email;
+        const userFound = await db.User.findOne({email:userFound.email});
+        
+            
+        if(userFound){
                 return res.status(200).send({
-                    accessTokken:accessTokken,
-                    refreshTokken:refreshTokken,
-                    message:`Welcome ${userFound.firstName}`,
+                    data:{
+                        email:email
+                    }
                 });
             }else{
-                return res.status(400).send(`The password doesn't match`);
-            }
-            
-        }else{
-            return res.status(400).send(`The user not exist`);
+            await db.User.create({
+                firebase_id: uid,
+                email: email
+            });
+
+            res.status(201).send(
+                generateResponse({
+                    data:{
+                        email:email,
+                    }
+                })
+            )
         }
         
     }catch(err){
@@ -86,6 +71,37 @@ async function login(req,res){
     }
     
 }
+// async function login(req,res){
+//     const {email, password}=req.body;
+//     try{
+//         const userFound = await db.User.findOne({email:email});
+//         const matchPassword = await db.User.comparePassword(password,userFound.password);
+//         if(userFound) {
+//             if(matchPassword){
+//                 const accessTokken = generateTokken({email:email});
+//                 const refreshTokken= randTokken.generate(256);
+
+//                 sessionData.refreshTokens[refreshTokken]=userFound.email;
+//                 return res.status(200).send({
+//                     accessTokken:accessTokken,
+//                     refreshTokken:refreshTokken,
+//                     message:`Welcome ${userFound.firstName}`,
+//                 });
+//             }else{
+//                 return res.status(400).send(`The password doesn't match`);
+//             }
+            
+//         }else{
+//             return res.status(400).send(`The user not exist`);
+//         }
+        
+//     }catch(err){
+//         return res.status(500).send({
+//             error:err.message,
+//         })
+//     }
+    
+// }
 
 async function getUsers(req,res){
     try{
@@ -158,5 +174,5 @@ module.exports={
     getUser:getUser,
     delete_user:delete_user,
     update_user:update_user,
-    refreshTokken:refreshTokken
+   
 }

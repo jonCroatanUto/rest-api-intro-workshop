@@ -7,8 +7,8 @@ const { userExistsMiddleweare,userNotExistsMiddleweare, authMiddleweare } = requ
 
 
 
-userRouter.post("/",userController.refreshTokken);
-userRouter.post("/signUp",userExistsMiddleweare,userController.register);
+
+userRouter.post("/signUp",userController.register);
 userRouter.post("/signIn",userController.login);
 userRouter.get("/",authMiddleweare,userController.getUsers);
 userRouter.get("/:id",userNotExistsMiddleweare,userController.getUser);
