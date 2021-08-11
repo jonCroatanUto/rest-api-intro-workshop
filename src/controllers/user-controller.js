@@ -37,10 +37,13 @@ async function register(req,res){
 
 }
 
-async function login(req,res){
+async function login(req,res,next){
     const { uid, email } = req.user;
-    try{
-        const userFound = await db.User.findOne({email:userFound.email});
+     try{
+         console.log("Thats uid", uid);
+         console.log("That's email", email);
+         const userFound = await db.User.findOne({email:email});
+         console.log("That's userFound", userFound);
         
             
         if(userFound){
@@ -50,22 +53,24 @@ async function login(req,res){
                     }
                 });
             }else{
-            await db.User.create({
-                firebase_id: uid,
-                email: email
-            });
+                console.log("entra", uid)
+                await db.User.create({
+                    firebase_id: uid,
+                    email: email
+                });
 
-            res.status(201).send(
-                generateResponse({
+            res.status(201).send({
+               
                     data:{
                         email:email,
                     }
+            
                 })
-            )
         }
         
     }catch(err){
-        return res.status(500).send({
+        next(err);
+         res.status(500).send({
             error:err.message,
         })
     }

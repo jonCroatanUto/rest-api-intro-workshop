@@ -9,15 +9,18 @@ async function authMiddleweare(req,res,next){
             req.headers.authorization.startsWith("Bearer")
             ){
             const userClaims = await auth.verifyIdToken(req.headers.authorization.substr(7));
+            
             const {email,uid} = userClaims;
             req.user = {
                 email:email,
                 uid:uid,
             };
-            next()
+           
+            next();
         }
 
     }catch(err){
+        console.log(err);
         return res.status(401).send({
             error:err});
     }

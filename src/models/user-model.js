@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt") ;
 const userSchema = Schema({
         firstName:{
             type:String,
-            required:[true, "We need a name , please"]
+            //required:[true, "We need a name , please"]
         },
         lastName:{
             type:String,
@@ -23,7 +23,7 @@ const userSchema = Schema({
         },
         password:{
             type:String,
-            required:[true, "Please we need a password"]
+            //required:[true, "Please we need a password"]
         },
         firebase_id: {
             type: String,

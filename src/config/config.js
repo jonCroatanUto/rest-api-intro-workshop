@@ -27,6 +27,9 @@ const config = {
         app:{
             port:PORT || 4000
         },
+        client:{
+            URL:process.env.CLIENT_URL || "http://localhost:3000"
+        },
         db:{
             url:MONGO_DB_URL_DEVELOPMENT
         },
@@ -50,7 +53,8 @@ const config = {
                 auth_provider_x509_cert_url:AUTH_PROVIDER_X_509_CERT_URL,
                 client_x509_cert_url:CLIENT_X_509_CERT_URL
             }
-        }
+        },    
+       
     },
     test:{
         app:{
@@ -78,7 +82,10 @@ const config = {
                 auth_provider_x509_cert_url:AUTH_PROVIDER_X_509_CERT_URL,
                 client_x509_cert_url:CLIENT_X_509_CERT_URL
             }
-        }
+        },    
+        client:{
+            URL:process.env.CLIENT_URL || "http://localhost:3000"
+        },
     },
     production:{
         app:{
@@ -106,7 +113,10 @@ const config = {
                 auth_provider_x509_cert_url:AUTH_PROVIDER_X_509_CERT_URL,
                 client_x509_cert_url:CLIENT_X_509_CERT_URL
             }
-        }
+        },    
+        client:{
+            URL:process.env.CLIENT_URL || "http://localhost:3000"
+        },
     },
 }
 module.exports={

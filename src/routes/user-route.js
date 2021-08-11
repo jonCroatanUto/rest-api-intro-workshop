@@ -9,7 +9,7 @@ const { userExistsMiddleweare,userNotExistsMiddleweare, authMiddleweare } = requ
 
 
 userRouter.post("/signUp",userController.register);
-userRouter.post("/signIn",userController.login);
+userRouter.post("/signIn",authMiddleweare, userController.login);
 userRouter.get("/",authMiddleweare,userController.getUsers);
 userRouter.get("/:id",userNotExistsMiddleweare,userController.getUser);
 userRouter.delete("/:id",userNotExistsMiddleweare,userController.delete_user);
